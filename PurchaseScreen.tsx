@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Search, Truck, Package, PlusCircle, Calendar, CreditCard, History, Tag, X, Check, Plus, Minus, Calculator } from 'lucide-react';
-import { TRANSLATIONS, Product, Purchase } from '../types';
+import { TRANSLATIONS, Product, Purchase } from './types';
 
 interface PurchaseProps {
   store: any;
