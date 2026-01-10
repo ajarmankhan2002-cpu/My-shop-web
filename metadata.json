@@ -1,0 +1,5 @@
+{
+  "name": "MY SHOP",
+  "description": "A professional shop management mobile-first application featuring offline-first data storage, inventory tracking, sales reports, and near-expiry alerts.",
+  "requestFramePermissions": []
+}
