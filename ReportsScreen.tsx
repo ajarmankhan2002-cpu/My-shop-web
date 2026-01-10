@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { TRANSLATIONS, Sale } from '../types';
+import { TRANSLATIONS, Sale } from './types';
 import { TrendingUp, TrendingDown, DollarSign, Box, History, Trash2, Calendar, User } from 'lucide-react';
 
 interface ReportsProps { store: any; }
