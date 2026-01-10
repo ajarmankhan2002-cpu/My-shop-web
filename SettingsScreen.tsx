@@ -21,7 +21,7 @@ import {
   LogOut,
   RefreshCw
 } from 'lucide-react';
-import { TRANSLATIONS, DEFAULT_LOGO } from '../types';
+import { TRANSLATIONS, DEFAULT_LOGO } from './types';
 
 interface SettingsProps { store: any; }
 
