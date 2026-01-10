@@ -14,11 +14,11 @@ import {
 import { useLocalStore } from './store';
 import { TRANSLATIONS, DEFAULT_LOGO } from './types';
 import Dashboard from './Dashboard'; // Root
-import SalesScreen from './components/SalesScreen'; // Subdir
+import SalesScreen from './SalesScreen'; // Subdir
 import InventoryScreen from './InventoryScreen'; // Root
-import PurchaseScreen from './components/PurchaseScreen'; // Subdir
-import ReportsScreen from './components/ReportsScreen'; // Subdir
-import SettingsScreen from './components/SettingsScreen'; // Subdir
+import PurchaseScreen from './PurchaseScreen'; // Subdir
+import ReportsScreen from './ReportsScreen'; // Subdir
+import SettingsScreen from './SettingsScreen'; // Subdir
 import DueScreen from './DueScreen'; // Root
 import LoginScreen from './LoginScreen'; // Root
 import { auth } from './firebase';
