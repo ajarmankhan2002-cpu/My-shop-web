@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { Search, ShoppingCart, Minus, Plus, X, Check, Printer, FileImage, Loader2, User, Tag } from 'lucide-react';
 import * as ReactToPrint from 'react-to-print';
 import { toPng } from 'html-to-image';
-import { TRANSLATIONS, Product, Sale, Credit, DEFAULT_LOGO } from '../types';
+import { TRANSLATIONS, Product, Sale, Credit, DEFAULT_LOGO } from './types';
 
 // Robustly handle the hook import from the bundled module
 const useReactToPrint = (ReactToPrint as any).useReactToPrint || (ReactToPrint as any).default?.useReactToPrint;
