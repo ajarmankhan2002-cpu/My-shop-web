@@ -48,9 +48,9 @@ const LoginScreen: React.FC<LoginProps> = ({ language, toggleLanguage, logo }) =
       <div className="w-full max-w-sm z-10">
         <div className="text-center mb-10">
           <div className="w-24 h-24 bg-white rounded-[40px] shadow-2xl mx-auto flex items-center justify-center mb-6 overflow-hidden p-3">
-             <img src={logo} alt="Shop Logo" className="w-full h-full object-contain" />
+             <img src="logo.png" alt="Ideal Pharma Logo" className="w-full h-full object-contain" />
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tighter uppercase mb-2">MY SHOP</h1>
+          <h1 className="text-3xl font-black text-white tracking-tighter uppercase mb-2">IDEAL PHARMA</h1>
           <p className="text-teal-100 text-xs font-bold uppercase tracking-widest opacity-80">Cloud Management</p>
         </div>
 
