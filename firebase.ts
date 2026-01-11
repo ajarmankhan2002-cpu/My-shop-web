@@ -1,23 +1,21 @@
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getAuth } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-
-// @google/genai guidelines: Use environment variables for API keys when needed.
-// Firebase configuration for the application.
+// Firebase configuration for the application
 const firebaseConfig = {
-  apiKey: "AIzaSyARMNduuHSFEAnAQJOsjkfJhLhm4Ol9U9M",
+  apiKey: "AIzaSyARMNduuH5FEAnAQJOvjkfJhLhm4D19U9M",
   authDomain: "my-shop-f64d1.firebaseapp.com",
   projectId: "my-shop-f64d1",
   storageBucket: "my-shop-f64d1.firebasestorage.app",
   messagingSenderId: "993864918356",
   appId: "1:993864918356:web:e95378a68984177fbe14c1",
-  measurementId: "G-TM5GG0X03M"
+  measurementId: "G-TMSSGOX03W"
 };
 
-// Initialize Firebase using the modern modular SDK (v9+).
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase using the singleton pattern
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Initialize and export services using modular patterns.
+// Export initialized services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
