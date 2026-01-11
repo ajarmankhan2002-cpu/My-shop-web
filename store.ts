@@ -1,10 +1,8 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Product, Sale, Purchase, Credit, Language, AppState, StoreDetails } from './types';
-import { doc, setDoc, onSnapshot, getDoc } from "firebase/firestore";
+import { doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { db, auth } from "./firebase";
-// Re-fix: Ensure standard modular imports are used for auth state management.
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const STORAGE_KEY = 'pharma_flow_v1_data';
 
@@ -24,6 +22,13 @@ const initialState: AppState = {
   isSyncing: false
 };
 
+// Helper function to prevent circular references and clean undefined values
+const sanitizeForFirestore = (obj: any) => {
+  return JSON.parse(JSON.stringify(obj, (key, value) => 
+    typeof value === 'undefined' ? null : value
+  ));
+};
+
 export function useLocalStore() {
   const [state, setState] = useState<AppState>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -39,15 +44,13 @@ export function useLocalStore() {
   const stateRef = useRef(state);
   useEffect(() => { stateRef.current = state; }, [state]);
 
-  // Firebase Real-time Listener (Cloud to Local)
+  // Firebase Real-time Listener
   useEffect(() => {
-    // Re-fix: Listening to auth state changes using the modular SDK.
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
         const unsubDoc = onSnapshot(doc(db, "shops", user.uid), (docSnap) => {
           if (docSnap.exists()) {
             const cloudData = docSnap.data() as AppState;
-            // Only update local state if cloud data is newer or local is empty
             if (!stateRef.current.lastSync || (cloudData.lastSync && cloudData.lastSync > stateRef.current.lastSync)) {
                setState(prev => ({ 
                  ...prev, 
@@ -66,18 +69,17 @@ export function useLocalStore() {
     return () => unsubscribeAuth();
   }, []);
 
-  // Sync Local to Cloud (Debounced)
+  // Sync Local to Cloud (Fixed Circular Logic)
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const cleanState = sanitizeForFirestore(state);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cleanState));
 
     const user = auth.currentUser;
     if (user && !state.isSyncing) {
       const timeout = setTimeout(async () => {
         const syncTime = Date.now();
-        setState(prev => ({ ...prev, isSyncing: true }));
-        
         try {
-          const dataToSync = {
+          const dataToSync = sanitizeForFirestore({
             products: stateRef.current.products,
             sales: stateRef.current.sales,
             purchases: stateRef.current.purchases,
@@ -85,14 +87,15 @@ export function useLocalStore() {
             storeDetails: stateRef.current.storeDetails,
             language: stateRef.current.language,
             lastSync: syncTime
-          };
+          });
+          
           await setDoc(doc(db, "shops", user.uid), dataToSync);
           setState(prev => ({ ...prev, lastSync: syncTime, isSyncing: false }));
         } catch (e) {
           console.error("Cloud sync failed", e);
           setState(prev => ({ ...prev, isSyncing: false }));
         }
-      }, 10000); // 10 second debounce
+      }, 10000); 
       return () => clearTimeout(timeout);
     }
   }, [state.products, state.sales, state.purchases, state.credits, state.storeDetails, state.language]);
@@ -104,7 +107,7 @@ export function useLocalStore() {
     setState(prev => ({ ...prev, isSyncing: true }));
     try {
       const syncTime = Date.now();
-      const dataToSync = {
+      const dataToSync = sanitizeForFirestore({
         products: stateRef.current.products,
         sales: stateRef.current.sales,
         purchases: stateRef.current.purchases,
@@ -112,12 +115,11 @@ export function useLocalStore() {
         storeDetails: stateRef.current.storeDetails,
         language: stateRef.current.language,
         lastSync: syncTime
-      };
+      });
       await setDoc(doc(db, "shops", user.uid), dataToSync);
       setState(prev => ({ ...prev, lastSync: syncTime, isSyncing: false }));
       return true;
     } catch (e) {
-      console.error("Manual sync failed", e);
       setState(prev => ({ ...prev, isSyncing: false }));
       return false;
     }
@@ -125,11 +127,9 @@ export function useLocalStore() {
 
   const unlinkGoogle = async () => {
     try {
-      // Re-fix: Using the modular signOut function.
       await signOut(auth);
       return true;
     } catch (e) {
-      console.error("Logout failed", e);
       return false;
     }
   };
@@ -250,7 +250,7 @@ export function useLocalStore() {
   };
 
   const recordDuePayment = (creditId: string, amount: number) => {
-    const targetCredit = state.credits.find(c => c.id === creditId);
+    const targetCredit = stateRef.current.credits.find(c => c.id === creditId);
     if (!targetCredit) return null;
     const paymentId = crypto.randomUUID();
     const timestamp = Date.now();
@@ -301,7 +301,8 @@ export function useLocalStore() {
     unlinkGoogle,
     toggleLanguage: () => setState(p => ({ ...p, language: p.language === 'en' ? 'bn' : 'en' })),
     backupToLocal: () => {
-      const str = JSON.stringify(state);
+      const cleanState = sanitizeForFirestore(state);
+      const str = JSON.stringify(cleanState);
       const blob = new Blob([str], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
