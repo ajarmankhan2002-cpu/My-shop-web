@@ -7,7 +7,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyARMNduuH5FEAnAQJOvjkfJhLhm4D19U9M",
   authDomain: "my-shop-f64d1.firebaseapp.com",
   projectId: "my-shop-f64d1",
-  storageBucket: "my-shop-f64d1.firebasestorage.app",
+  storageBucket: "my-shop-f64d1.firebasestorage.com",
   messagingSenderId: "993864918356",
   appId: "1:993864918356:web:e95378a68984177fbe14c1",
   measurementId: "G-TMSSGOX03W"
